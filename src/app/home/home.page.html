@@ -1,0 +1,49 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Catálogo de Recetas (API Explorer)</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  
+  <!-- Barra de Búsqueda (R3) -->
+  <ion-searchbar 
+    placeholder="Buscar receta..." 
+    (ionInput)="onSearch($event)"
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Spinner de Carga Inicial -->
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando datos de la API...</p>
+  </div>
+
+  <!-- Listado en Tarjetas (R1) -->
+  <ion-list *ngIf="!isLoading && meals.length > 0">
+    <ion-card *ngFor="let meal of meals">
+      <img [src]="meal.strMealThumb" alt="Imagen de receta" />
+      <ion-card-header>
+        <ion-card-title>{{ meal.strMeal }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Categoría:</strong> {{ meal.strCategory }}</p>
+        <p><strong>Región:</strong> {{ meal.strArea }}</p>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <!-- Estado vacío (R5) -->
+  <div *ngIf="!isLoading && meals.length === 0" class="ion-text-center ion-padding">
+    <p>No se encontraron resultados para tu búsqueda.</p>
+  </div>
+
+  <!-- Infinite Scrolling (R2) -->
+  <ion-infinite-scroll (ionInfinite)="loadMoreData($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content 
+      loadingSpinner="bubbles" 
+      loadingText="Cargando más elementos...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>
